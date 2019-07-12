@@ -28,3 +28,9 @@ rules_java_internal_deps()
 load("//:internal_setup.bzl", "rules_java_internal_setup")
 
 rules_java_internal_setup()
+
+register_toolchains(
+    "@rules_java//java/toolchains:javac_linux_toolchain",
+    "@rules_java//java/toolchains:javac_windows_toolchain",
+    "@rules_java//java/toolchains:javac_darwin_toolchain",
+)
