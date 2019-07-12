@@ -29,6 +29,7 @@ load("//:internal_setup.bzl", "rules_java_internal_setup")
 
 rules_java_internal_setup()
 
+# The remote JDK 11 used by default in Bazel as host java runtime.
 maybe(
     http_archive,
     "host_jdk_linux",
