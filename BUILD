@@ -12,3 +12,8 @@ filegroup(
     ]),
     visibility = ["@//distro:__pkg__"],
 )
+
+exports_files(
+    ["WORKSPACE"],
+    visibility = ["//visibility:public"],
+)

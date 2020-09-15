@@ -12,6 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# WARNING: This file only exists for backwards-compatibility.
+# rules_java uses the Bazel federation, so please add any new dependencies to
+# rules_java_deps() in
+# https://github.com/bazelbuild/bazel-federation/blob/master/repositories.bzl
+# Java-only third party dependencies can be added to
+# https://github.com/bazelbuild/bazel-federation/blob/master/java_repositories.bzl
+# Ideally we'd remove anything in this file except for rules_java_toolchains(),
+# which is being invoked as part of the federation setup.
+
+"""Development and production dependencies of rules_java."""
+
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 
@@ -71,25 +82,25 @@ def java_tools_javac11_repos():
     maybe(
         http_archive,
         name = "remote_java_tools_javac11_linux",
-        sha256 = "10d6f00c72e42b6fda378ad506cc93b1dc92e1aec6e2a490151032244b8b8df5",
+        sha256 = "96e223094a12c842a66db0bb7bb6866e88e26e678f045842911f9bd6b47161f5",
         urls = [
-             "https://mirror.bazel.build/bazel_java_tools/releases/javac11/v3.0/java_tools_javac11_linux-v3.0.zip",
+            "https://mirror.bazel.build/bazel_java_tools/releases/javac11/v4.0/java_tools_javac11_linux-v4.0.zip",
         ],
     )
     maybe(
         http_archive,
         name = "remote_java_tools_javac11_windows",
-        sha256 = "b688155d81245b4d1ee52cac447aae5444b1c59dc77158fcbde05554a6bab48b",
+        sha256 = "a1de51447b2ba2eab923d589ba6c72c289c16e6091e6a3bb3e67a05ef4ad200c",
         urls = [
-            "https://mirror.bazel.build/bazel_java_tools/releases/javac11/v3.0/java_tools_javac11_windows-v3.0.zip",
+            "https://mirror.bazel.build/bazel_java_tools/releases/javac11/v4.0/java_tools_javac11_windows-v4.0.zip",
         ],
     )
     maybe(
         http_archive,
         name = "remote_java_tools_javac11_macos",
-        sha256 = "28989f78b1ce437c92dd27bb4943b2211ba4db916ccbb3aef83696a8f9b43724",
+        sha256 = "fbf5bf22e9aab9c622e4c8c59314a1eef5ea09eafc5672b4f3250dc0b971bbcc",
         urls = [
-             "https://mirror.bazel.build/bazel_java_tools/releases/javac11/v3.0/java_tools_javac11_darwin-v3.0.zip",
+            "https://mirror.bazel.build/bazel_java_tools/releases/javac11/v4.0/java_tools_javac11_darwin-v4.0.zip",
         ],
     )
 
@@ -118,14 +129,16 @@ def java_tools_javac12_repos():
     )
 
 def remote_jdk9_repos():
-    # OpenJDK distributions that should only be downloaded on demand (e.g. when
-    # building a java_library or a genrule that uses java make variables).
-    # This will allow us to stop bundling the full JDK with Bazel.
-    # Note that while these are currently the same as the openjdk_* rules in
-    # Bazel's WORKSPACE file, but they don't have to be the same.
+    """OpenJDK distributions that should only be downloaded on demand.
 
-    # The source-code for this OpenJDK can be found at:
-    # https://openjdk.linaro.org/releases/jdk9-src-1708.tar.xz
+    E.g. when building a java_library or a genrule that uses java make
+    variables).  This will allow us to stop bundling the full JDK with Bazel.
+    Note that while these are currently the same as the openjdk_* rules in
+    Bazel's WORKSPACE file, but they don't have to be the same.
+
+    The source-code for this OpenJDK can be found at:
+    https://openjdk.linaro.org/releases/jdk9-src-1708.tar.xz
+    """
     maybe(
         http_archive,
         name = "remote_jdk9_linux_aarch64",
@@ -287,19 +300,7 @@ def remote_jdk12_repos():
         ],
     )
 
-def remote_jdk_repos():
-    remote_jdk9_repos()
-#    remote_jdk10_repos()
-    remote_jdk11_repos()
-#    remote_jdk12_repos()
-
-def java_tools_repos():
-#    java_tools_javac9_repos()
-#    java_tools_javac10_repos()
-    java_tools_javac11_repos()
-#    java_tools_javac12_repos()
-
-def _bazel_skylib():
+def bazel_skylib():
     maybe(
         http_archive,
         name = "bazel_skylib",
@@ -311,18 +312,20 @@ def _bazel_skylib():
 def rules_java_dependencies():
     """An utility method to load all dependencies of rules_java.
 
-    It doesn't do anything at the moment.
+    Loads the remote repositories used by default in Bazel.
     """
-    java_tools_repos()
-    remote_jdk_repos()
-    _bazel_skylib()
+
+    remote_jdk11_repos()
+    java_tools_javac11_repos()
+    bazel_skylib()
+    print("I am hereee")
 
 def rules_java_toolchains():
     """An utility method to load all Java toolchains.
 
     It doesn't do anything at the moment.
     """
-
+    print("I am here")
     native.register_toolchains("@rules_java//java/toolchains/javac/linux:all")
     native.register_toolchains("@rules_java//java/toolchains/javac/macos:all")
     native.register_toolchains("@rules_java//java/toolchains/javac/windows:all")
